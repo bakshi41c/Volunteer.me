@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import me.volunteer.credentials.LoginController;
+import me.volunteer.credentials.LoginSecurity;
 import me.volunteer.database.DbAdapter;
 import me.volunteer.database.RemoteDbConnector;
 import me.volunteer.entity.Organization;
@@ -45,7 +45,14 @@ public class Controller extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		Connection connection = rdc.getConnection();
+		
+		DbAdapter dba = new DbAdapter(rdc.getConnection());
+		
 		String action = request.getParameter("action");
+		
+		String email = (String) request.getSession().getAttribute("email");
+		String org = (String) request.getSession().getAttribute("org");
 		
 		if (action.equals("null")){
 			
@@ -57,7 +64,7 @@ public class Controller extends HttpServlet {
 			request.setAttribute("password", "");
 			request.setAttribute("message", "");
 			
-			if (request.getSession().getAttribute("email") != null){
+			if (email != null){
 				request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
 			}else{
 				request.getRequestDispatcher("/login.jsp").forward(request, response);
@@ -68,8 +75,27 @@ public class Controller extends HttpServlet {
 			request.getRequestDispatcher("/register.jsp").forward(request, response);
 		}else if (action.equals("orgregister")){
 			request.getRequestDispatcher("/orgregister.jsp").forward(request, response);
+		}else if (action.equals("userdetails")){
+			
+			if (email != null){
+				
+				if (org.equals("true")){
+					
+				}else{
+					request.setAttribute("user", dba.getUser(email));
+					request.getRequestDispatcher("/userdetails.jsp").forward(request, response);
+				}
+				
+			}else{
+				request.setAttribute("email", "");
+				request.setAttribute("password", "");
+				request.setAttribute("message", "");
+				
+			}
+			
 		}
 		
+
 	}
 
 	/**
@@ -79,6 +105,8 @@ public class Controller extends HttpServlet {
 		
 		Connection connection = rdc.getConnection();
 		
+		DbAdapter dba = new DbAdapter(rdc.getConnection());
+		
 		String action = request.getParameter("action");
 		
 		if (action.equals("dologin")){
@@ -87,15 +115,18 @@ public class Controller extends HttpServlet {
 			String password = (String) request.getParameter("password");
 			String org = (String) request.getParameter("organization");
 			
-			if (org.length() == 0 || org == null){
-				if (true == LoginController.checkCredentialsUser(email, password, connection)){
+			if (org == null || org.length() == 0){
+				if (true == LoginSecurity.checkCredentialsUser(email, password, connection)){
 					request.getSession().setAttribute("email", email);
 					request.getSession().setAttribute("org", "false");
-					request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
+					User user = dba.getUser(email);
+					request.setAttribute("user",user);
+					//throw new NullPointerException("Name" + user.getName() + user.getId());
+					request.getRequestDispatcher("/userdetails.jsp").forward(request, response);
 				}
 			}else{
 				
-				if (true == LoginController.checkCredentialsOrg(email, password, connection)){
+				if (true == LoginSecurity.checkCredentialsOrg(email, password, connection)){
 					request.getSession().setAttribute("email", email);
 					request.getSession().setAttribute("org", "true");
 					request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
@@ -118,8 +149,7 @@ public class Controller extends HttpServlet {
 			String email = (String) request.getParameter("email");
 			String password = (String) request.getParameter("password");
 			
-			User user = new User (email,LoginController.hashPassword(password),name);
-			DbAdapter dba = new DbAdapter(connection);
+			User user = new User (email,LoginSecurity.hashPassword(password),name);
 			dba.createUser(user);
 			
 			request.getSession().setAttribute("email", email);
@@ -134,8 +164,7 @@ public class Controller extends HttpServlet {
 			String phone = (String) request.getParameter("phone");
 			String about = (String) request.getParameter("about");
 			
- 			Organization org = new Organization(name, email, phone, address, about, null, LoginController.hashPassword(password));
-			DbAdapter dba = new DbAdapter(connection);
+ 			Organization org = new Organization(name, email, phone, address, about, null, LoginSecurity.hashPassword(password));
 			dba.createOrganization(org);
 			
 			request.getSession().setAttribute("email", email);

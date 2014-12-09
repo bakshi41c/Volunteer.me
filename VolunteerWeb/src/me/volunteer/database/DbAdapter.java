@@ -65,18 +65,61 @@ public class DbAdapter {
 		this.connection = connection;
 	}
 	
-	public void getUser(String email){
+	public User getUser(String email){
 		
 		String sql = "select * from users where email=?";
 		ArrayList<Object> values = new ArrayList<Object>();
 		values.add((String)email);
 		
+		ResultSet rs = null;
+		
+		User user = null;
+		
 		try {
-			queryDb(sql,values);
+			rs = queryDb(sql,values);
+			if(rs.next()){				
+				user = new User(rs.getInt("idUsers"), 
+								rs.getString("email"), 
+								rs.getString("password"), 
+								rs.getString("name"),
+								rs.getBoolean("isAdmin"));
+			
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			//return null;
 		}
+		return user;
+		
+		
+	}
+	
+	public Organization getOrg(String email){
+		
+		String sql = "select * from organizations where email=?";
+		ArrayList<Object> values = new ArrayList<Object>();
+		values.add((String)email);
+		
+		ResultSet rs = null;
+		
+		Organization org = null;
+		
+		try {
+			rs = queryDb(sql,values);
+			org = new Organization(
+					rs.getInt("idOranizations"), 
+					rs.getString("name"), 
+					rs.getString("email"), 
+					rs.getString("phone"),
+					rs.getString("address"),
+					rs.getString("about"),
+					rs.getString("imageLink"),
+					rs.getString("hashedPassword"));
+					
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return org;
+		
 		
 	}
 	
@@ -156,6 +199,8 @@ public class DbAdapter {
 		}
 		
 	}
+	
+	
 	
 	private ResultSet queryDb(String sql, ArrayList<Object> parameters) throws SQLException{
 		

@@ -4,16 +4,14 @@ import java.util.Calendar;
 
 public class User {
 	
-	public enum Gender{
-		MALE,FEMALE
-	}
+	
 	
 	int id;
 	String email;
 	String hashedPassword;
 	String name;
 	Calendar dob;
-	Gender gender;
+	String gender;
 	String personalStatement;
 	String imageLink;
 	boolean isAdmin;
@@ -26,11 +24,11 @@ public class User {
 		
 	}
 	
-	public User(int id, String email, String hashedPassword, String name){
+	public User(int id, String email, String hashedPassword, String name, Boolean isAdmin){
 		
 		this(email, hashedPassword,name);
 		this.id = id;
-		
+		this.isAdmin = isAdmin;
 	}
 	
 	public int getId(){
@@ -69,11 +67,11 @@ public class User {
 		this.dob = dob;
 	}
 
-	public Gender getGender() {
+	public String getGender() {
 		return gender;
 	}
 
-	public void setGender(Gender gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 
