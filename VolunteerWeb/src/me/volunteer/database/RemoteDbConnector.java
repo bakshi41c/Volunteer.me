@@ -19,21 +19,25 @@ public class RemoteDbConnector {
 	
 	DataSource ds;
 	
-	private static final String DBName = "volunteeringDB";
+	private static final String DBName = "volunteeringdb";
 	
 	/**
 	 * Creates the context and sets data source
 	 */
 	public RemoteDbConnector(){
-		InitialContext initContext = null;
+
 		try {
 			
-			initContext = new InitialContext();
+			InitialContext initContext = new InitialContext();
 			Context env = (Context) initContext.lookup("java:comp/env");
 			ds = (DataSource) env.lookup("jdbc/" + DBName);
 			
 		} catch (NamingException e) {
 			e.printStackTrace();
+		}
+		
+		if (ds == null){
+			//throw new NullPointerException();
 		}
 		
 	}
@@ -53,8 +57,15 @@ public class RemoteDbConnector {
 			conn = ds.getConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new NullPointerException(e.toString());
 		}
 		
+		/*
+		if (conn == null){
+			System.out.println("No connection");
+			throw new NullPointerException();
+		}
+		*/
 		return conn;
 	}
 	
