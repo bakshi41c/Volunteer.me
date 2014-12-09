@@ -68,9 +68,12 @@
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
         <div class="checkbox">
+        
           <p class="login-error"><%= request.getAttribute("message") %></p>
           <p>
-          <a href = <%= response.encodeUrl(request.getContextPath() + "/Controller?action=register") %>>Not a member?</a>
+          	<a href = <%= response.encodeUrl(request.getContextPath() + "/Controller?action=register") %>>Not a member?</a>
+          	<br><br>
+          	<input type="checkbox" name="organization" value="true">Log in as Orgnization<br>
           </p>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>

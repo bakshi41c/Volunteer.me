@@ -8,10 +8,18 @@ import me.volunteer.database.DbAdapter;
 
 public class LoginController {
 	
-	public static boolean checkCredentials (String email, String password, Connection conn){
+	public static boolean checkCredentialsUser (String email, String password, Connection conn){
 		
 		DbAdapter db = new DbAdapter(conn);
-		boolean result = db.checkCredentials(email, hashPassword(password));
+		boolean result = db.checkCredentials(email, hashPassword(password),false);
+		
+		return result;
+	}
+	
+	public static boolean checkCredentialsOrg (String email, String password, Connection conn){
+		
+		DbAdapter db = new DbAdapter(conn);
+		boolean result = db.checkCredentials(email, hashPassword(password),true);
 		
 		return result;
 	}

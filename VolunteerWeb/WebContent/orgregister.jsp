@@ -4,8 +4,7 @@
 <html>
 <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Register</title>
-		
+		<title>Register as Organization</title>
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 		
@@ -61,12 +60,10 @@
 </head>
 <body>
 	<div class="container">
-		<form class="form-signin" role="form" method="post" action="<%= response.encodeUrl(request.getContextPath() + "/Controller?action=createuser")%>">
-			<h2 class="form-signin-heading">Register</h2>
-			<a href = <%= response.encodeUrl(request.getContextPath() + "/Controller?action=orgregister") %>>  Register as Organization</a>
-			<br><br>
+		<form class="form-signin" role="form" method="post" action="<%= response.encodeUrl(request.getContextPath() + "/Controller?action=createorg")%>">
+			<h2 class="form-signin-heading">Register as Organization</h2>
 			<label for="inputName" class="sr-only">First Name</label>
-			<input type="name" id="inputName" class="form-control" placeholder="Name" name = "name" required autofocus>
+			<input type="name" id="inputName" class="form-control" placeholder="Organization Name" name = "name" required autofocus>
 			<br>
 			<label for="inputEmail" class="sr-only">Email address</label>
 			<input type="email" id="inputEmail" class="form-control" placeholder="Email address" name = "email" required autofocus>
@@ -77,6 +74,14 @@
 			<label for="inputPassword" class="sr-only">Confirm Password</label>
 			<input type="password" id="inputPassword" class="form-control" placeholder="Confirm Password" required>
 			<br>
+			<label for="inputAbout" class="sr-only">About</label>
+			<input type="text" id="inputAbout" class="form-control" placeholder="About your organization" name = "about" ems = "3" required>
+			<br>
+			<label for="inputPhNumber" class="sr-only">Phone</label>
+			<input type="text" id="inputPhNumber" class="form-control" placeholder="Phone number" name = "phone" required>
+			<br>
+			<label for="inputAddress" class="sr-only">Address</label>
+			<input type="text" id="inputAddress" class="form-control" placeholder="Address" name = "address" required>
 			<br>
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
 		</form>

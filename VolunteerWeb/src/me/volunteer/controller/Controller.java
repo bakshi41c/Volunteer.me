@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import me.volunteer.credentials.LoginController;
 import me.volunteer.database.DbAdapter;
 import me.volunteer.database.RemoteDbConnector;
+import me.volunteer.entity.Organization;
 import me.volunteer.entity.User;
 
 /**
@@ -56,7 +57,7 @@ public class Controller extends HttpServlet {
 			request.setAttribute("password", "");
 			request.setAttribute("message", "");
 			
-			if (request.getSession().getAttribute("userId") != null){
+			if (request.getSession().getAttribute("email") != null){
 				request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
 			}else{
 				request.getRequestDispatcher("/login.jsp").forward(request, response);
@@ -64,8 +65,9 @@ public class Controller extends HttpServlet {
 			
 			
 		}else if (action.equals("register")){
-			
 			request.getRequestDispatcher("/register.jsp").forward(request, response);
+		}else if (action.equals("orgregister")){
+			request.getRequestDispatcher("/orgregister.jsp").forward(request, response);
 		}
 		
 	}
@@ -83,40 +85,63 @@ public class Controller extends HttpServlet {
 			
 			String email = (String) request.getParameter("email");
 			String password = (String) request.getParameter("password");
-						
+			String org = (String) request.getParameter("organization");
 			
-			if (true == LoginController.checkCredentials(email, password, connection)){
-				request.getSession().setAttribute("email", email);
-				request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
+			if (org.length() == 0 || org == null){
+				if (true == LoginController.checkCredentialsUser(email, password, connection)){
+					request.getSession().setAttribute("email", email);
+					request.getSession().setAttribute("org", "false");
+					request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
+				}
 			}else{
-				request.setAttribute("message", "Incorrect Login or Password");
-				request.getRequestDispatcher("/login.jsp").forward(request, response);
+				
+				if (true == LoginController.checkCredentialsOrg(email, password, connection)){
+					request.getSession().setAttribute("email", email);
+					request.getSession().setAttribute("org", "true");
+					request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
+				}
+				
 			}
+			
+			request.setAttribute("message", "Incorrect Login or Password");
+			request.getRequestDispatcher("/login.jsp").forward(request, response);
+			
+			
 			
 		}else if (action.equals("logout")){
 			request.getSession().invalidate();
 			request.getRequestDispatcher("/login.jsp").forward(request, response);
+		
 			
 		}else if (action.equals("createuser")){
 			String name = (String) request.getParameter("name");
 			String email = (String) request.getParameter("email");
 			String password = (String) request.getParameter("password");
 			
-			
-			
 			User user = new User (email,LoginController.hashPassword(password),name);
-
-			
 			DbAdapter dba = new DbAdapter(connection);
-			
 			dba.createUser(user);
+			
 			request.getSession().setAttribute("email", email);
+			request.getSession().setAttribute("org", "false");
 			request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
 			
+		}else if (action.equals("createorg")){
+			String name = (String) request.getParameter("name");
+			String email = (String) request.getParameter("email");
+			String password = (String) request.getParameter("password");
+			String address = (String) request.getParameter("address");
+			String phone = (String) request.getParameter("phone");
+			String about = (String) request.getParameter("about");
+			
+ 			Organization org = new Organization(name, email, phone, address, about, null, LoginController.hashPassword(password));
+			DbAdapter dba = new DbAdapter(connection);
+			dba.createOrganization(org);
+			
+			request.getSession().setAttribute("email", email);
+			request.getSession().setAttribute("org", "true");
+
 		}
-		
-		
-		
 	}
 
 }

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import me.volunteer.entity.Organization;
 import me.volunteer.entity.User;
 
 /**
@@ -97,9 +98,37 @@ public class DbAdapter {
 		
 	}
 	
-	public boolean checkCredentials(String email, String password){
+	public int createOrganization(Organization org){
 		
-		String sql = "select count(*) as count from users where email=? and password=?";
+		String sql = "INSERT INTO `volunteeringdb`.`oranizations` (`name`, `phone`, `address`, `email`, `about`, `hashedPassword`) VALUES (?, ?, ?, ?, ?, ?);";
+		
+		ArrayList<Object> values = new ArrayList<Object>();
+		values.add(org.getName());
+		values.add(org.getPhone());
+		values.add(org.getAddress());
+		values.add(org.getEmail());
+		values.add(org.getAbout());
+		values.add(org.getHashedPassword());
+		
+		try {
+			return updateDb(sql, values);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+		
+	}
+	
+	public boolean checkCredentials(String email, String password, boolean organization){
+		
+		String sql;
+		
+		if (organization){
+			sql = "select count(*) as count from organizations where email=? and password=?";
+		}else{
+			sql = "select count(*) as count from users where email=? and password=?";
+		}
+		
 		ArrayList<Object> values = new ArrayList<Object>();
 		values.add(email);
 		values.add(password);
@@ -125,8 +154,6 @@ public class DbAdapter {
 			e.printStackTrace();
 			return false;
 		}
-		
-		
 		
 	}
 	
@@ -176,7 +203,6 @@ public class DbAdapter {
 			
 		}
 		
-
 		
 		return stmt;
 		

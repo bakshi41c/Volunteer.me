@@ -33,7 +33,11 @@
 
 <p>You are logged in.</p>
 
-<p><%= request.getSession().getAttribute("email") %></p>
+<p>
+<%
+if (request.getSession().getAttribute("email") != null)
+
+%></p>
 
 </div>
 
