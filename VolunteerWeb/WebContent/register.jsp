@@ -60,19 +60,16 @@
 </head>
 <body>
 	<div class="container">
-		<form class="form-signin" role="form">
+		<form class="form-signin" role="form" method="post" action="<%= response.encodeUrl(request.getContextPath() + "/Controller?action=createuser")%>">
 			<h2 class="form-signin-heading">Register</h2>
 			<label for="inputName" class="sr-only">First Name</label>
-			<input type="name" id="inputName" class="form-control" placeholder="First Name" required autofocus>
-			<br>
-			<label for="inputName" class="sr-only">Last Name</label>
-			<input type="name" id="inputName" class="form-control" placeholder="Last Name" required autofocus>
+			<input type="name" id="inputName" class="form-control" placeholder="Name" name = "name" required autofocus>
 			<br>
 			<label for="inputEmail" class="sr-only">Email address</label>
-			<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+			<input type="email" id="inputEmail" class="form-control" placeholder="Email address" name = "email" required autofocus>
 			<br>
 			<label for="inputPassword" class="sr-only">Password</label>
-			<input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+			<input type="password" id="inputPassword" class="form-control" placeholder="Password" name = "password" required>
 			<br>
 			<label for="inputPassword" class="sr-only">Confirm Password</label>
 			<input type="password" id="inputPassword" class="form-control" placeholder="Confirm Password" required>

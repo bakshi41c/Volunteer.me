@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import me.volunteer.credentials.LoginController;
+import me.volunteer.database.DbAdapter;
 import me.volunteer.database.RemoteDbConnector;
+import me.volunteer.entity.User;
 
 /**
  * Servlet implementation class Controller
@@ -94,6 +96,23 @@ public class Controller extends HttpServlet {
 		}else if (action.equals("logout")){
 			request.getSession().invalidate();
 			request.getRequestDispatcher("/login.jsp").forward(request, response);
+			
+		}else if (action.equals("createuser")){
+			String name = (String) request.getParameter("name");
+			String email = (String) request.getParameter("email");
+			String password = (String) request.getParameter("password");
+			
+			
+			
+			User user = new User (email,LoginController.hashPassword(password),name);
+
+			
+			DbAdapter dba = new DbAdapter(connection);
+			
+			dba.createUser(user);
+			request.getSession().setAttribute("email", email);
+			request.getRequestDispatcher("/loginresult.jsp").forward(request, response);
+			
 		}
 		
 		

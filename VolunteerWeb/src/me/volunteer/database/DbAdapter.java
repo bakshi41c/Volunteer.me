@@ -1,11 +1,12 @@
 package me.volunteer.database;
-import java.sql.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import me.volunteer.entity.User;
 
 /**
  * Provides an adapter to modify the
@@ -63,11 +64,11 @@ public class DbAdapter {
 		this.connection = connection;
 	}
 	
-	public void getUser(int id){
+	public void getUser(String email){
 		
 		String sql = "select * from users where email=?";
 		ArrayList<Object> values = new ArrayList<Object>();
-		values.add((Integer)id);
+		values.add((String)email);
 		
 		try {
 			queryDb(sql,values);
@@ -75,6 +76,24 @@ public class DbAdapter {
 			e.printStackTrace();
 			//return null;
 		}
+		
+	}
+	
+	public void createUser(User user){
+		
+		String sql = "INSERT INTO `volunteeringdb`.`users` (`password`, `name`, `email`, `dob`, `gender`, `personalStatement`, `imageLink`, `isAdmin`) VALUES (?, ?, ?, null, null, null, null, '0');";
+		ArrayList<Object> values = new ArrayList<Object>();
+		values.add(user.getHashedPassword());
+		values.add(user.getName());
+		values.add(user.getEmail());
+		
+		
+		try {
+			updateDb(sql, values);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		
 	}
 	
@@ -129,7 +148,6 @@ public class DbAdapter {
 	private PreparedStatement prepareStatement(String sql, ArrayList<Object> parameters) throws SQLException{
 		
 		
-		
 		PreparedStatement stmt = connection.prepareStatement(sql);
 		
 
@@ -158,6 +176,7 @@ public class DbAdapter {
 			
 		}
 		
+
 		
 		return stmt;
 		
